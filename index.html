@@ -1,0 +1,162 @@
+<meta charset="utf-8">
+<html>
+	<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<script src="vue.min.js"></script>
+<body>
+
+
+<div id="app-4" >
+<span>status zlecenia :</span>
+<select id="zakonczone" v-model="czy_zakonczone" >
+          <option value="false">Otwarte</option>
+		  <option value="true">Zakonczone</option>
+		 
+		</select>
+		<span>rodzaj filtru :</span>
+		<select id="polefitru" v-model="polefiltru">
+		  <option value="data_przyjecia">Data przyjęcia</option>
+		  <option value="dane_klienta">Dane klienta</option>
+		  <option value="adres">Adres</option>
+		  <option value="przyblizona_data">Przybliżona data wykonania</option>
+		</select> 
+
+		Szukaj: <input id="filtr" v-model="filtr" name=szukaj></input>
+		<button onclick='zapisz_wszystko()' >Zapisz wszystko</button>
+	
+	<a href = "archiwizator.html">Archiwizuj </a>
+	
+
+ 
+		<br></br>
+	  
+    <div id="pole" v-for="todo, index_zlecenia in todos"  >
+ <div id="edycja"  v-if="todo.wykonane==czy_zakonczone && filtrZawiera(index_zlecenia)">
+ <table id="tabela" >
+ <tr>
+<td id="nazwa_pola">Data przyjęcia zlecenia</td>
+<td id="nazwa_pola">Dane klienta</td>
+<td id="nazwa_pola">Adres</td>
+
+
+<td id="nazwa_pola">Przybliżona data wykonania</td>
+<td id="nazwa_pola">Uwagi</td>
+<td id="nazwa_pola">Faktura</td>
+<td id="nazwa_pola">Status zlecenia</td>     
+ </tr>
+ <tr>
+<td>
+<input type="date" v-model="todo.data_przyjecia"></input>
+</td>
+<td >
+<input v-model="todo.dane_klienta"></input>
+</td>
+<td >
+<input v-model="todo.adres"></input>
+</td>
+<td >
+<input type="date" v-model="todo.przyblizona_data"></input>
+</td>
+<td >
+
+<textarea id="uwagi" v-model="todo.uwagi"></textarea>
+
+</td>
+<td >
+<select v-model="todo.faktura">
+  <option value="true">tak</option>
+  <option value="false">nie</option>
+</select>
+</td>
+<td >
+<select v-model="todo.wykonane">
+  <option value="true">zakończone</option>
+  <option value="false">do wykonania</option>
+</select>
+</td>
+</tr>
+</table>
+
+
+<button id="pokaz" onclick="pokazZasoby(this)">Pokaż zasoby</button>
+<div id="container"  class="container" otwarte="false" onclick="pokazZasoby(this)">
+
+	<div id="zasoby" class="zasoby" >
+	
+	<table id="tabela2" v-for="zasob, index_zasobu in todo.zasoby">
+<tr>
+ <td>
+ <input v-model="zasob.nazwa"></input>
+ </td>
+ <td>
+ <input type=number v-model="zasob.ilosc"></input>
+	<span>ilość</span>
+</td>
+ <td>	
+ <input v-model="zasob.cena"></input>
+	<span >cena</span>
+ </td>
+
+ <td id="suma" label='suma'>
+	<span>suma :  </span>
+  {{zasob.ilosc * zasob.cena }}
+ </td>
+ <td id="guzik">
+ <button  v-on:click= 'usunzasob(index_zlecenia, index_zasobu)'>Usuń zasób</button>
+
+ </td>
+ 
+ </tr>
+ </table>
+ 
+		</div>
+		
+		
+		<div id="dokumenty" >
+	<table id="tabela3" v-for="dokument, index_dokumentu in todo.dokumenty">
+<tr>	
+ <td>
+ <input v-model="dokument.nazwa"></input>
+ </td>
+ <td>
+	<label class="wybor-pliku">Przeglądaj...
+		<input  type="file" name="myFile"  v-on:change='updateFileName(event, index_zlecenia, index_dokumentu) '>
+		</input>
+	</label> 
+	<span class="nazwa-dokumentu">{{dokument.plik}}</span>
+</td>
+<td>
+<a  v-bind:href="'./pliki/' + dokument.plik"  >Otwórz dokument</a>
+ </td>
+
+ <td id="guzik">
+ <button  v-on:click= 'usunDokument(index_zlecenia, index_dokumentu)'>Usuń dokument</button>
+
+ </td>
+ 
+ </tr>
+ </table>
+ 
+		</div>
+		
+		</div>
+		
+		
+		<div id="suma_zlecenia"> wartość zlecenia: {{wartoscZlecenia(index_zlecenia)}} zł<br></div>
+	
+  <button id="scroll" onclick="scrol()" v-on:click= 'addZasoby(index_zlecenia)'>Dodaj zasób</button>
+<button id="scroll" onclick="scrol()" v-on:click= 'dodajDokument(index_zlecenia)'>Dodaj dokument</button>
+  <button  v-on:click= 'usunzlecenie(index_zlecenia)'>Usuń zlecenie</button>
+    </div>
+
+  </div>
+  <br>
+<button id="scroll" v-on:click= 'addNew'>Dodaj zlecenie</button>
+</br>
+</div>
+
+</body>
+
+<script src="skryip.js"></script>
+</html>
